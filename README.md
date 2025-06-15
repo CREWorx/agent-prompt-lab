@@ -1,3 +1,3 @@
 # bandits-ai-lab
 
-🎭 Late night prompt raids and AI heists. I collect the techniques that actually work, test them in the wild, and share the loot. Welcome to my stash.
+🧪 My working notebook for AI development. Prompt engineering, multi-agent patterns, and practical guides for building with Node.js, n8n, and modern AI tools.
