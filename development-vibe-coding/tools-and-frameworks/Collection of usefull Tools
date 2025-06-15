@@ -1,4 +1,5 @@
-#Tools
+# Tools
 
-## Email:
-	1. https://aws.amazon.com/ses/
+## Email
+
+- [Amazon Simple Email Service (SES)](https://aws.amazon.com/ses/): Cloud-based email sending service for transactional, marketing, and notification messages with high deliverability.
