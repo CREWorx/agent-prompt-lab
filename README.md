@@ -51,9 +51,9 @@ Agent architectures and patterns:
 
 ### [💻 Development & Vibe Coding](/development-vibe-coding)
 Practical development with AI tools:
-- Claude Code workflows
-- Cursor patterns
-- Windsurf tips
+- Claude Code
+- Cursor
+- Windsurf
 - Node.js AI development
 - n8n automation workflows
 
