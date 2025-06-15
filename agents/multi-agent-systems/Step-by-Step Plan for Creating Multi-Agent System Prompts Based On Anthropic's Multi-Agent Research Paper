@@ -1,0 +1,294 @@
+# Step-by-Step Plan for Creating Multi-Agent System Prompts Based On Anthropic's Multi-Agent Research Paper
+link to Anthropic's Multi-Agent Research Paper: https://www.anthropic.com/engineering/built-multi-agent-research-system
+
+**Full Analysis of Anthropic's Multi-Agent Research System**
+
+**Core Architecture & Design Philosophy**
+
+Anthropic's system uses an **orchestrator-worker pattern** with these key components:
+
+1. **LeadResearcher Agent**: Analyzes queries, develops strategies, spawns subagents
+2. **Subagents**: Operate in parallel with separate context windows, performing focused searches
+3. **CitationAgent**: Processes final results to ensure proper source attribution
+4. **Dynamic iterative process**: Unlike static RAG systems, uses multi-step search that adapts based on findings
+
+**Critical Success Factors**
+
+1. **Token Economics**: Multi-agent systems use ~15x more tokens than regular chat (vs 4x for single agents)
+2. **Performance Gains**: 90.2% improvement over single-agent Claude Opus 4
+3. **Parallelization**: Up to 90% time reduction for complex queries
+4. **Separation of Concerns**: Each subagent has distinct tools, prompts, and exploration trajectories
+
+**Key Challenges Identified**
+
+- Coordination complexity grows rapidly
+- Agents can spawn excessive subagents (50 for simple queries)
+- Risk of endless searching for nonexistent sources
+- Agents distracting each other with excessive updates
+- Synchronous execution creates bottlenecks
+- Minor failures cascade into major behavioral changes
+
+**Step-by-Step Plan for Creating Multi-Agent System Prompts**
+
+**Phase 1: Foundation Architecture**
+
+**Step 1: Define Agent Roles & Hierarchy**
+
+1. Map out agent types:
+   - Orchestrator/Lead Agent
+   - Specialized Worker Agents (by domain/tool)
+   - Quality Control/Citation Agents
+   - Error Recovery Agents
+
+2. Define clear boundaries:
+   - What each agent can/cannot do
+   - When to delegate vs handle internally
+   - Maximum agent spawn limits
+
+**Step 2: Establish Communication Protocols**
+
+1. Design message formats:
+   - Task assignment structure
+   - Result reporting format
+   - Error/status updates
+
+2. Create handoff mechanisms:
+   - How agents pass work
+   - Context compression for handoffs
+   - Reference systems for artifacts
+
+**Phase 2: Prompt Engineering Framework**
+
+**Step 3: Lead Agent Prompt Template**
+
+Core Components:
+1. Role Definition
+   - "You are a research orchestrator responsible for..."
+   - Clear scope of authority
+
+2. Decomposition Guidelines
+   - How to break complex queries
+   - Parallelizable vs sequential tasks
+   - Resource allocation rules
+
+3. Delegation Framework
+   - Task description requirements:
+     * Objective
+     * Output format
+     * Tool/source guidance
+     * Clear boundaries
+   
+4. Scaling Rules (from simple to complex):
+   - Simple fact: 1 agent, 3-10 tool calls
+   - Comparison: 2-4 agents, 10-15 calls each
+   - Complex research: 10+ agents with divisions
+
+5. Quality Control
+   - When to stop searching
+   - How to validate subagent work
+   - Synthesis requirements
+
+**Step 4: Subagent Prompt Templates**
+
+1. Task Reception
+   - "You receive specific research tasks..."
+   - How to interpret instructions
+   
+2. Search Strategy
+   - Start broad, then narrow
+   - Short queries (1-6 words initially)
+   - Progressive refinement
+
+3. Tool Usage Heuristics
+   - Examine all available tools first
+   - Match tools to intent
+   - Prefer specialized over generic
+
+4. Self-Evaluation
+   - Use interleaved thinking
+   - Assess result quality
+   - Identify gaps
+   - Know when complete
+
+5. Result Formatting
+   - Structured output requirements
+   - Citation tracking
+   - Error reporting
+
+**Phase 3: Tool Design & Integration**
+
+**Step 5: Tool Interface Design**
+
+1. Tool Descriptions
+   - Crystal clear purpose
+   - Distinct from other tools
+   - Usage examples
+   
+2. Error Handling
+   - Graceful failure modes
+   - Clear error messages
+   - Fallback options
+
+3. Tool Selection Logic
+   - Decision trees for tool choice
+   - Context-based recommendations
+
+**Step 6: Implement Thinking Mechanisms**
+
+1. Extended Thinking Mode
+   - Planning scratch pad
+   - Strategy formulation
+   - Tool assessment
+
+2. Interleaved Thinking
+   - Post-tool result analysis
+   - Gap identification
+   - Next step planning
+
+**Phase 4: Coordination & State Management**
+
+**Step 7: State Management System**
+
+1. Checkpoint Design
+   - When to save state
+   - What to preserve
+   - Recovery mechanisms
+
+2. Context Management
+   - Compression strategies
+   - External memory systems
+   - Fresh agent spawning
+
+3. Error Recovery
+   - Resumption points
+   - Graceful degradation
+   - User communication
+
+**Step 8: Parallel Execution Framework**
+
+1. Synchronization Points
+   - When agents must wait
+   - When they can proceed
+
+2. Result Aggregation
+   - Deduplication strategies
+   - Conflict resolution
+   - Quality ranking
+
+**Phase 5: Evaluation & Iteration**
+
+**Step 9: Create Evaluation Framework**
+
+1. Small Sample Testing (20 queries)
+   - Representative use cases
+   - Edge case coverage
+   - Performance baselines
+
+2. LLM-as-Judge Rubric
+   - Factual accuracy
+   - Citation accuracy
+   - Completeness
+   - Source quality
+   - Tool efficiency
+
+3. Human Evaluation
+   - Behavioral edge cases
+   - Source selection biases
+   - User satisfaction
+
+**Step 10: Self-Improvement Loop**
+
+1. Agent Self-Analysis
+   - Give agents their prompts
+   - Let them diagnose failures
+   - Implement suggestions
+
+2. Tool Description Refinement
+   - Test tools extensively
+   - Rewrite descriptions
+   - Measure improvement
+
+**Phase 6: Production Hardening**
+
+**Step 11: Monitoring & Observability**
+
+1. Decision Pattern Tracking
+   - Agent choices
+   - Tool usage patterns
+   - Failure modes
+
+2. Performance Metrics
+   - Token usage
+   - Time to completion
+   - Success rates
+
+**Step 12: Deployment Strategy**
+
+1. Rainbow Deployments
+   - Gradual rollout
+   - Version coexistence
+   - Safe rollback
+
+2. A/B Testing Framework
+   - Prompt variations
+   - Architecture changes
+   - Performance comparison
+
+**Key Prompt Engineering Principles**
+
+**1. Think Like Your Agents**
+- Build simulations to watch agents step-by-step
+- Identify failure modes through observation
+- Develop accurate mental models
+
+**2. Teach Explicit Delegation**
+- Never use vague instructions like "research X"
+- Provide: objective, format, tools, boundaries
+- Prevent duplicate work through clear division
+
+**3. Scale Effort Appropriately**
+- Embed scaling rules in prompts
+- Match resources to query complexity
+- Prevent overinvestment in simple tasks
+
+**4. Start Wide, Then Narrow**
+- Mirror expert human research patterns
+- Begin with broad exploration
+- Progressive focus refinement
+
+**5. Guide the Thinking Process**
+- Use extended thinking for planning
+- Interleaved thinking for adaptation
+- Make reasoning visible and controllable
+
+**Advanced Considerations**
+
+**Emergent Behaviors**
+- Small prompt changes → large behavioral shifts
+- Focus on collaboration frameworks over strict rules
+- Define division of labor, not just tasks
+
+**Asynchronous Future**
+- Current systems are synchronous (bottleneck)
+- Future: real-time coordination between agents
+- Challenges: state consistency, error propagation
+
+**Domain-Specific Adaptations**
+- Research tasks: high parallelization potential
+- Coding tasks: more sequential, less parallel
+- Adjust architecture to domain characteristics
+
+**Implementation Checklist**
+
+□ Define clear agent roles and boundaries
+□ Create detailed task decomposition rules
+□ Design tool interfaces with clear descriptions
+□ Implement thinking mechanisms (extended/interleaved)
+□ Build state management and recovery systems
+□ Create evaluation framework (automated + human)
+□ Set up monitoring and observability
+□ Design safe deployment strategies
+□ Establish self-improvement loops
+□ Test with small samples before scaling
+
+This framework provides a comprehensive approach to building multi-agent systems based on Anthropic's proven architecture. The key is to start simple, test rigorously, and iterate based on observed behaviors rather than assumptions about how agents "should" work.
