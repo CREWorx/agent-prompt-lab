@@ -1,6 +1,6 @@
 # Remote MCP Setup Command
 
-Command for setting up remote MCP servers with authentication in Claude Code. Install this in root ~/.claude/commands directory.
+Command for setting up remote MCP servers with authentication in Claude Code. Place this file in root ~/.claude/commands directory.
 
 ## Usage:
 `/remote-mcp [server-url] [server-name]`
